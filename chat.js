@@ -9,7 +9,7 @@ require("jsdom").env("", function(err, window) {
         console.error(err);
         return;
     }
- 
+
     $ = require("jquery")(window);
 });
 
@@ -66,14 +66,14 @@ var socketIo = io.listen(server);
 socketIo.on("connection", function(socket) {
 	console.log("connection");
 	userId = socket.id;
-	
-	
+
+
 	// 연결 알림
-	socket.emit('connection', {                  
+	socket.emit('connection', {
 		type : 'connected'
-	});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-	
-	
+	});
+
+
 	// 방 접속
 	socket.on('joinRoom', function(data) {
 		function getRoomUserInfo(userInfo, data, asd) {
@@ -90,8 +90,8 @@ socketIo.on("connection", function(socket) {
 				}
 			})
 		}
-		
-		
+
+
 		// 연결 후 처음으로 방에 입장 했을 시 실행
 		if (userInfo[socket.id] == null) {
 			userInfo[socket.id] = data;
@@ -115,7 +115,7 @@ socketIo.on("connection", function(socket) {
 		socket.emit('system', {
 			message : '채팅방에 오신 것을 환영합니다.'
 		});
-		
+
 		// db 입력
 		var chatLog = new ChatLogModel();
 		chatLog.log = data.name + '님이 접속하셨습니다.';
@@ -127,22 +127,22 @@ socketIo.on("connection", function(socket) {
 		NowTime += ':' + Now.getMinutes();
 		NowTime += ':' + Now.getSeconds();
 		chatLog.date = NowTime;
-		
+
 		chatLog.save(function(error, chatLog){
 			console.log("log save 입장");
 //			console.log(chatLog.log);
 //			console.log(chatLog.date);
 			if (error)  return console.error(err);
-		});	
-			
-		
+		});
+
+
 		// 나를 제외한 모두에게 전송
 		socket.broadcast.to(data.room).emit('system', {
 			roomNo : data.room,
 			message : data.name + '님이 접속하셨습니다.'
 		});
 	});
-	
+
 	// 클라이언트로부터 메세지가 도착했을 시 실행
     socket.on('user', function(data) {
     	var send;
@@ -167,11 +167,11 @@ socketIo.on("connection", function(socket) {
     		}
     		break;
     	}
-    	
+
         socket.broadcast.to(userData.room).emit('message', send);
         console.log("in");
-        
-        
+
+
     	// db 입력
 		var chatMsg = new ChatMsgModel();
 		chatMsg.uid = userInfo[socket.id].uid;
@@ -184,14 +184,14 @@ socketIo.on("connection", function(socket) {
 		NowTime += ':' + Now.getMinutes();
 		NowTime += ':' + Now.getSeconds();
 		chatMsg.date = NowTime;
-		
+
 		chatMsg.save(function(error, chatMsg){
 			if (error)  return console.error(err);
-		});	
+		});
     });
-    
-    
-    // 유저가 퇴장할 때 실행 
+
+
+    // 유저가 퇴장할 때 실행
     // db에 있는 유저 목록 삭제 > 방에 유저 수를 체크 > 0일 경우 방 삭제
     // 방 인원이 0보다 큰 경우에는 db에서 유저 정보를 새롭게 가져와서 클라이언트로 보냄
     socket.on('outRoom', function (data) {
@@ -236,7 +236,7 @@ socketIo.on("connection", function(socket) {
             		}
         		}
         	})
-    		
+
     		// db 입력
     		var chatLog = new ChatLogModel();
     		chatLog.log = data.name + '님이 퇴장하셨습니다.';
@@ -248,14 +248,14 @@ socketIo.on("connection", function(socket) {
     		NowTime += ':' + Now.getMinutes();
     		NowTime += ':' + Now.getSeconds();
     		chatLog.date = NowTime;
-    		
+
     		chatLog.save(function(error, chatLog){
     			console.log("log save 퇴장");
     			console.log(chatLog.log);
     			console.log(chatLog.date);
     			if (error)  return console.error(err);
     		});
-    		
+
     		socket.broadcast.to(userInfo[socket.id].room).emit('outMsg', {
     			name : userInfo[socket.id].name,
     			roomNo : userInfo[socket.id].room,
@@ -263,13 +263,12 @@ socketIo.on("connection", function(socket) {
     		});
     	}
 	});
-    
-    
-    // 방에서 나갈 때 클라이언트 에서 'outRoom' emit 후 'roomList'를 'on' 그리고 'on' 메서드 안에서 'exit' emit 실행 
+
+
+    // 방에서 나갈 때 클라이언트 에서 'outRoom' emit 후 'roomList'를 'on' 그리고 'on' 메서드 안에서 'exit' emit 실행
     socket.on('exit',function (data) {
     	socket.leave();
 		socket.disconnect();
 		console.log("나감");
     });
 });
-

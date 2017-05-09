@@ -1,7 +1,7 @@
 {
-  "name": "rscamper-side-server",
+  "name": "rscamper-nodejs",
   "version": "1.0.0",
-  "description": "rscamper-side-server",
+  "description": "rscamper-nodejs",
   "main": "app_routes.js",
   "dependencies": {
     "body-parser": "^1.15.2",

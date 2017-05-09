@@ -14,22 +14,22 @@ var uidArr = [];
 
 socketIo.on("connection", function (socket) {
 	console.log("notis socket connection");
-	
+
 	socket.on("notis", function(userUid) {
 		console.log("접속한 회원 정보 : " + userUid, socket.id);
 		// 입력한 아이디와 socket.id를 연결
 		uidArr[userUid] = socket.id;
 	});
-	
+
 
 	socket.on("commentInfo", function(data) {
 		console.log("in commentInfo");
 		console.log(data.type);
 		console.log(data.recvId);
 		console.log(data.count);
-		
+
 		var message = "알림이 도착 했습니다.";
-		
+
 		switch (data.type) {
 		case "comment" :
 			message = "댓글이 달렸습니다.";
@@ -44,7 +44,7 @@ socketIo.on("connection", function (socket) {
 			message = "쪽지를 받았습니다.";
 			break;
 		}
-		
+
 		// io.to("전송할 소켓 아이디").emit
 		socketIo.to(uidArr[data.recvId]).emit("notification", {
 			message : message,
@@ -52,5 +52,3 @@ socketIo.on("connection", function (socket) {
 		});
 	});
 });
-
-
